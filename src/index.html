@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+  <META NAME="Author" CONTENT="oscar999">
+  <meta http-equiv="x-ua-compatible" content="ie=9"/>
+  <title>考试</title>
+  <link rel="stylesheet" href="index.css" />
+  <style>
+    .ant-input-group-wrapper>.ant-input-wrapper.ant-input-group>input{
+      height: 43px;
+    }
+  </style>
+
+  <!--[if It IE 11]>
+  <script type="text/javascript" >
+    alert("此版本不支持IE浏览器、浏览器兼容模式，请您换其他浏览器或将浏览器换为极速模式")
+  </script>
+  <![endif]-->
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function (event) {
+      // chrome 浏览器直接加上下面这个样式就行了，但是ff不识别
+      document.body.style.zoom = 'reset';
+      document.addEventListener('keydown', function (event) {
+        if ((event.ctrlKey === true || event.metaKey === true)
+          && (event.which === 61 || event.which === 107
+          || event.which === 173 || event.which === 109
+          || event.which === 187  || event.which === 189))
+        {
+          event.preventDefault();
+        }
+      }, false);
+      function mouseScroll(event) {
+        if (event.ctrlKey === true || event.metaKey) {
+          event.preventDefault();
+        }
+      }
+      document.addEventListener('DOMMouseScroll',mouseScroll );
+      document.addEventListener('mousewheel',mouseScroll );
+    }, false);
+  </script>
+
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="index.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+// 用于覆盖上面定义的变量
+:global {
+  html, body, #root {
+    height: 100%;
+    font-family: '微软雅黑';
+    position: relative;
+  }
+  @font-face {
+    font-family: 'iconfont';
+    src: url('../src/iconfont/iconfont.eot');
+    src: url('../src/iconfont/iconfont.eot?#iefix') format('embedded-opentype'),
+    url('../src/iconfont/iconfont.woff') format('woff'),
+    url('../src/iconfont/iconfont.ttf') format('truetype'),
+    url('../src/iconfont/iconfont.svg#iconfont') format('svg');
+  }
+  .iconfont{
+    font-family:"iconfont" !important;
+    font-size:16px;font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  //弹出框
+  .handmodal>div>div>div:nth-of-type(1){
+    height:60px;
+    background:url('./assets/tiph.png') no-repeat;
+  }
+  .handmodal>div>div>div:nth-of-type(2){
+    height:220px;
+  }
+
+  //登录页
+  .loginBox{
+    width:943px;
+    height: 483px;
+    margin:0 auto;
+    background: #Ffffff;
+    border:1px solid #DFDFDF;
+    box-shadow: 5px 5px 35px 5px #eee;
+    margin-bottom: 13%;
+  }
+  .loginBox .ant-input-group-addon{
+    padding: 0;
+    border: none;
+  }
+  .ant-radio-group label span:last-child{
+    display: inline-block;
+  }
+
+  .aBtn,.aBtnDenger{
+    display: block;
+    width: 120px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    color: #fff;
+    border-radius: 4px;
+    margin: 0 auto;
+
+  }
+  .aBtn{
+    background: #108EE9;
+  }
+  .aBtn:hover{
+    background: #10B1E9;
+    color:#fff;
+  }
+  .aBtnDefa{
+    border: 1px solid #108EE9;
+    border-radius: 5px;
+    display: block;
+    height: 32px;
+    padding: 0 10px;
+    line-height: 32px;
+    width: 68px;
+    text-align: center;
+    font-size: 15px;
+  }
+  .aBtnDenger{
+    width: 165px;
+    background: #ff6c00;
+  }
+  .aBtnDenger:hover{
+    background: #FF973E;
+    color:#fff;
+  }
+}

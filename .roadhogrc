@@ -1,0 +1,26 @@
+{
+  "entry": "src/index.js",
+  "disableCSSModules": false,
+  "publicPath": "/",
+  "less":"true",
+  "theme": {
+    "@primary-color": "#108EE9",
+    "@link-color": "#108EE9",
+    "@border-radius-base": "5px",
+    "@font-size-base": "14px",
+    "@line-height-base": "1.2",
+    "@zindex-tooltip":"1000"
+  },
+  "autoprefixer": null,
+  "extraBabelPlugins": [
+    "transform-runtime",
+    ["import", { "libraryName": "antd","libraryDirectory": "lib", "style": true }]
+  ],
+  "env": {
+    "development": {
+      "extraBabelPlugins": [
+        "dva-hmr"
+      ]
+    }
+  }
+}
