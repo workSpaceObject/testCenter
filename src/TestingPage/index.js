@@ -19,26 +19,24 @@ class TestingPage extends Component {
     const {dispatch}=this.props;
     this.interval=setInterval(this.time,1000);
     document.addEventListener('keydown',(event)=>this.onKeyDown(event))
+    window.onblur = function(e) {
+      e = e || window.event;
+      if (window.ActiveXObject && /MSIE/.test(navigator.userAgent)) {  //IE
+        //如果 blur 事件是窗口内部的点击所产生，返回 false, 也就是说这是一个假的 blur
+        var x = e.clientX;
+        var y = e.clientY;
+        var w = document.body.clientWidth;
+        var h = document.body.clientHeight;
 
-    // window.onblur = function (e) {
-    //   e = e || window.event;
-    //   if (window.ActiveXObject && /MSIE/.test(navigator.userAgent)) {  //IE
-    //     //如果 blur 事件是窗口内部的点击所产生，返回 false, 也就是说这是一个假的 blur
-    //     var x = e.clientX;
-    //     var y = e.clientY;
-    //     var w = document.body.clientWidth;
-    //     var h = document.body.clientHeight;
-    //
-    //     if (x >= 0 && x <= w && y >= 0 && y <= h) {
-    //       window.focus();
-    //       return false;
-    //     }
-    //   }else {
-    //     screenfull.exit();
-    //     dispatch({type:'tcTestState/increLeaveCnt',payload:{type:'/leaveWait'}})
-    //   }
-    // }
-    window.addEventListener('onblur',(e)=>this.winonBulr(e))
+        if (x >= 0 && x <= w && y >= 0 && y <= h) {
+          window.focus();
+          return false;
+        }
+      }else {
+        screenfull.exit();
+        this.props.dispatch({type:'tcTestState/increLeaveCnt',payload:{type:'/leaveWait'}})
+      }
+    }
   }
   componentDidUpdate(){
     const {countDown,}=this.props.tcTestState;
@@ -55,7 +53,7 @@ class TestingPage extends Component {
     clearInterval(this.interval);
     this.props.dispatch({type:'tcTestState/updateState',payload:{countDown:9999}})
     document.removeEventListener("keydown",this.onKeyDowm);
-    window.removeEventListener('onblur',this.winonBulr);
+    window.removeEventListener('onblur',this.windowBulr);
   }
   onKeyDown=(event)=> {
     var e = event || window.event || arguments.callee.caller.arguments[0];
@@ -73,7 +71,7 @@ class TestingPage extends Component {
       this.props.dispatch({type:'tcTestState/increLeaveCnt',payload:{type:'/leaveWait'}})
     }
   }
-  winonBulr=(e)=>{
+  windowBulr=(e)=>{
     e = e || window.event;
     if (window.ActiveXObject && /MSIE/.test(navigator.userAgent)) {  //IE
       //如果 blur 事件是窗口内部的点击所产生，返回 false, 也就是说这是一个假的 blur
@@ -204,13 +202,11 @@ class TestingPage extends Component {
             {/*个人信息和题号     */}
             <div className={styles.nums}>
               <div className={styles.infoimg}>
-                <img src={`${urlpre}/tc/getExamineeImg/${examinee.uid}/${examinee.imgVer}`}  alt=""  style={{width:'90px',height:'90px',borderRadius:'45px'}}/>
+                <img src={`${urlpre}/ts/getExamineeImg/${examinee.uid}/${examinee.imgVer}`}  alt=""  style={{width:'90px',height:'90px',borderRadius:'45px'}}/>
                 <div style={{marginLeft:'10px'}}>
                   <p style={{color:'#333333',fontSize:'16px'}}>{examinee.name}</p>
-                  {/*<p style={{color:'#666666',paddingTop:'10px'}}>{unit.title}</p>总分<span style={{color:'#FA9627',fontSize:'20px'}}>100</span>*/}
                 </div>
               </div>
-              <div style={{height:'45px',lineHeight:'40px',backgroundColor:'#E4F0FE',textAlign:'center',color:'#7F8284'}}>{unit.title}</div>
               {/*<div className={styles.infoname}>*/}
                 {/*<h4>{examinee.name}</h4>*/}
               {/*</div>*/}

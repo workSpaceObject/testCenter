@@ -39,7 +39,6 @@ class LoginPage extends Component {
 
     return (
      <div>
-
        <div className="loginBox">
          <Row style={{height:480}}>
            <Col span={14} style={{textAlign:'center'}}>
@@ -60,12 +59,10 @@ class LoginPage extends Component {
                    </Col>
                  </Row>
                  <Button htmlType="submit" style={{height:37,width:'100%',marginTop:'50px',fontSize:17}} ref="login" type="primary">登录</Button>
-                 <p style={{textAlign:'center',color:'#999999',position:'absolute',bottom:'10px',left:'54px'}}>技术支持：北京云翼互联科技有限公司</p>
                </Form>
              </div>
            </Col>
          </Row>
-
        </div>
      </div>
     );

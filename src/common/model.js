@@ -1,4 +1,4 @@
-import {setLocalData,getLocalData,removeLocalData,getUnitSetting,login,getTestInfo,getLeaveSeconds,enterTest,increLeaveCnt,saveStudentAns,saveStudentAnses,deployPaper,sendHelpEvent,getReplyedHelpEvent,saveStudentAnsDoubt,saveStudentAnsDoubts,updateOfflineAnses} from  './service';
+import {setLocalData,getLocalData,removeLocalData,login,getTestInfo,getLeaveSeconds,enterTest,increLeaveCnt,saveStudentAns,saveStudentAnses,deployPaper,sendHelpEvent,getReplyedHelpEvent,saveStudentAnsDoubt,saveStudentAnsDoubts,updateOfflineAnses} from  './service';
 import {routerRedux} from 'dva/router';
 import {combineExtProperties} from 'devutils';
 import {notification} from 'antd';
@@ -10,7 +10,6 @@ export default {
     curUser:{},
     testInfos:{},
     examinees:[],
-    unit:{},
     //试卷信息、
     ansResults:{},
     ansDoubts:[],
@@ -42,8 +41,7 @@ export default {
     *login({payload},{call,put}){
       const {data} = yield call(login, payload);
       if (data) {
-        const {unitId,examineeUid}=data.data;
-        yield call(setLocalData,'unitId',String(unitId))
+        const {examineeUid}=data.data;
 
         if(examineeUid){
           yield call(setLocalData,'examineeUid',String(examineeUid))
@@ -54,11 +52,7 @@ export default {
         yield put({type:'getTestInfo',payload:{}})
       }
     },
-    *getUnitSetting({payload},{call,put}){
-      const {data}=yield call(getUnitSetting)
-    },
     *getTestInfo({payload},{call,put,select}){
-      const unitId=yield call(getLocalData,'unitId');
       const idCard=yield call(getLocalData,'identifier');
       let studnetUid=payload.examineeUid;
       //将examineeUid放入localStroge里，以便刷新时更新数据
@@ -78,7 +72,7 @@ export default {
           }
         }
       }
-      const {data}=yield call(getTestInfo,unitId,{...payload,examineeUid:studnetUid,identifier:idCard});
+      const {data}=yield call(getTestInfo,{...payload,examineeUid:studnetUid,identifier:idCard});
       if(data){
         const {testInfos,examinees}=data.data;
         yield put({type:'updateState',payload:{...data.data}})
@@ -88,7 +82,7 @@ export default {
           yield put({type:'updateState',payload:{examinees}})
           yield put(routerRedux.replace({pathname: '/select'}));
         }else {
-          const {ansResults,ansDoubts,examinee,test,testItems,paperSects,unit,waitSeconds}=data.data;
+          const {ansResults,ansDoubts,examinee,test,testItems,paperSects,waitSeconds}=data.data;
           //判断乱序,并重新排序
           let newTestItems;
           if(examinee.testItemIds){
@@ -124,7 +118,6 @@ export default {
           yield call(setLocalData,'test',JSON.stringify(test))
           yield call(setLocalData,'oldMaxLeaveCnt',test.maxLeaveCnt)
           yield call(setLocalData,'testItems',JSON.stringify(newTestItems))
-          yield call(setLocalData,'unit',JSON.stringify(unit));
           yield call(setLocalData,'paperSects',paperSects);
           yield call(setLocalData,'waitSeconds',waitSeconds);
           yield call(setLocalData,'leaveCnt',examinee.leaveCnt);
@@ -159,7 +152,6 @@ export default {
      const paperSects=yield call(getLocalData,'paperSects');
      const newFail=yield call(getLocalData,'failansResults');
      const failDoubt=yield call(getLocalData,'failansDoubts');
-     const oldunit=yield call(getLocalData,'unit');
       const oldWaitSecond=yield call(getLocalData,'waitSeconds');
      const oldMaxLeaveCnt=yield call(getLocalData,'oldMaxLeaveCnt')
       //格式化处理
@@ -173,9 +165,8 @@ export default {
      let oldCountDown=parseInt(oldcountDown);
      const failansResults=JSON.parse(newFail);
      const failansDoubts=JSON.parse(failDoubt);
-     const unit=JSON.parse(oldunit);
       const waitSeconds=parseInt(oldWaitSecond);
-      yield put({type:'updateState',payload:{ansResults,oldMaxLeaveCnt:parseInt(oldMaxLeaveCnt),examinee,test,testItems,countDown,leaveCnt,ansDoubts,paperSects,failansResults,failansDoubts,oldCountDown,unit,waitSeconds}})
+      yield put({type:'updateState',payload:{ansResults,oldMaxLeaveCnt:parseInt(oldMaxLeaveCnt),examinee,test,testItems,countDown,leaveCnt,ansDoubts,paperSects,failansResults,failansDoubts,oldCountDown,waitSeconds}})
     },
 
     //倒计时，存入localstroge中，防止刷新重新开始
@@ -197,8 +188,8 @@ export default {
     //计算离开
     *increLeaveCnt({payload},{call,put}){
      if(payload.type){
-       yield put(routerRedux.replace({pathname:payload.type}));
        yield put({type:'updateState',payload:{leaveVisible:false}})
+       yield put(routerRedux.replace({pathname:payload.type}));
      }else {
        const examineeUid=yield call(getLocalData,'examineeUid');
        const oldMaxLeaveCnt=yield call(getLocalData,'oldMaxLeaveCnt')
@@ -226,6 +217,13 @@ export default {
 
     //保存答案
     *saveStudentAns({payload},{call,put}){
+
+      const answer=yield call(getLocalData,'ansResults');
+      let ansResults=JSON.parse(answer);
+      ansResults={...ansResults,[payload.itemIndex]:payload.studentAns}
+      yield call(setLocalData,'ansResults',JSON.stringify(ansResults));
+      yield put({type:'getTestPapers',payload:{}})
+
       const examineeUid=yield call(getLocalData,'examineeUid');
       const {data,err}=yield call(saveStudentAns,examineeUid,payload.itemIndex,payload);
       //如果保存失败，试题答案进入failansResults；
@@ -244,11 +242,7 @@ export default {
        }
         yield call(setLocalData,'failansResults',JSON.stringify(failansResults));
       }
-      const answer=yield call(getLocalData,'ansResults');
-      let ansResults=JSON.parse(answer);
-      ansResults={...ansResults,[payload.itemIndex]:payload.studentAns}
-      yield call(setLocalData,'ansResults',JSON.stringify(ansResults));
-      yield put({type:'getTestPapers',payload:{}})
+
     },
 
     //每3分钟上传一次未上传成功的答案
@@ -307,6 +301,16 @@ export default {
 
     //标记疑问
     *saveStudentAnsDoubt({payload},{call,put,select}){
+
+      let ansDoubts=yield call(getLocalData,'ansDoubts');
+      if(payload.isDoubt){
+        ansDoubts.push(payload.itemIndex);
+      }else {
+        ansDoubts=ansDoubts.filter(value=>value!=payload.itemIndex);
+      }
+      yield call(setLocalData,'ansDoubts',ansDoubts);
+      yield put({type:'getTestPapers',payload:{}})
+
       const examineeUid=yield call(getLocalData,'examineeUid');
       const {data,err}=yield call(saveStudentAnsDoubt,examineeUid,payload.itemIndex,payload.isDoubt);
       if(err){
@@ -333,14 +337,7 @@ export default {
           }
         }
       }
-      let ansDoubts=yield call(getLocalData,'ansDoubts');
-      if(payload.isDoubt){
-        ansDoubts.push(payload.itemIndex);
-      }else {
-        ansDoubts=ansDoubts.filter(value=>value!=payload.itemIndex);
-      }
-      yield call(setLocalData,'ansDoubts',ansDoubts);
-      yield put({type:'getTestPapers',payload:{}})
+
     },
 
     //上传未上传的疑问

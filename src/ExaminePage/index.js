@@ -60,7 +60,7 @@ render() {
       {/*右边个人准考信息    */}
           <div className={publicstyle.boxLeft} style={{width:'29.95%'}}>
             <div className={styles.perimginfo}>
-              <img src={`${urlpre}/tc/getExamineeImg/${examinee.uid}/${examinee.imgVer}`} alt=""  style={{width:'120px',height:'140px'}}/>
+              <img src={`${urlpre}/ts/getExamineeImg/${examinee.uid}/${examinee.imgVer}`} alt=""  style={{width:'120px',height:'140px'}}/>
             </div>
             <div style={{height:'34%'}}>
               <Row className={styles.info}>

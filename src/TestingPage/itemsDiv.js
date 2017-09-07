@@ -31,7 +31,7 @@ for (let [index, item] of [...(testItems||[])].entries()) {
     let selIndex=-1;
     const radios=[...(item.itemSels||[])].map(sel=>{
       selIndex++;
-      return <Radio value={sel.selCode} size="large" style={{display: 'block',fontSize:14,fontFamily:'宋体',margin:'20px 20px 20px 30px',position:'relative',}}><span style={{position:'absolute',left:-20,top:-4,fontSize:17,fontWeight:'bold'}}>{selCode[selIndex]}：</span>{getPropertyValue(sel,'selText.isRichText')?<div dangerouslySetInnerHTML={{__html:getPropertyValue(sel,'selText.content')}}></div>:getPropertyValue(sel,'selText.content')}</Radio>
+      return <Radio value={sel.selCode} key={sel.selCode} size="large" style={{display: 'block',fontSize:14,fontFamily:'宋体',margin:'20px 20px 20px 30px',position:'relative',}}><span style={{position:'absolute',left:-20,top:-4,fontSize:17,fontWeight:'bold'}}>{selCode[selIndex]}、</span>{getPropertyValue(sel,'selText.isRichText')?<div dangerouslySetInnerHTML={{__html:getPropertyValue(sel,'selText.content')}}></div>:getPropertyValue(sel,'selText.content')}</Radio>
     })
 
     itemSel=(<RadioGroup onChange={(data)=>onSaveAns({itemIndex:index,studentAns:data.target.value})} defaultValue={defaultValue}>{radios}</RadioGroup>)
@@ -39,7 +39,7 @@ for (let [index, item] of [...(testItems||[])].entries()) {
     let selIndex=-1;
     const options=[...(item.itemSels||[])].map(sel=>{
       selIndex++;
-      return <Checkbox value={sel.selCode} size="large" style={{display: 'block',fontSize:14,fontFamily:'宋体',margin:'20px 20px 20px 30px',position:'relative',}}><span style={{position:'absolute',left:-20,top:-4,fontSize:17,fontWeight:'bold'}}>{selCode[selIndex]}：</span>{getPropertyValue(sel,'selText.isRichText')?<div dangerouslySetInnerHTML={{__html:getPropertyValue(sel,'selText.content')}}></div>:getPropertyValue(sel,'selText.content')}</Checkbox>
+      return <Checkbox value={sel.selCode}  key={sel.selCode} size="large" style={{display: 'block',fontSize:14,fontFamily:'宋体',margin:'20px 20px 20px 30px',position:'relative',}}><span style={{position:'absolute',left:-20,top:-4,fontSize:17,fontWeight:'bold'}}>{selCode[selIndex]}、</span>{getPropertyValue(sel,'selText.isRichText')?<div dangerouslySetInnerHTML={{__html:getPropertyValue(sel,'selText.content')}}></div>:getPropertyValue(sel,'selText.content')}</Checkbox>
     })
 
     itemSel=(<Checkbox.Group defaultValue={defaultValue} onChange={(data)=>onSaveAns({itemIndex:index,studentAns:checkBoxSave(data)})}>{options}</Checkbox.Group>)
@@ -53,7 +53,7 @@ for (let [index, item] of [...(testItems||[])].entries()) {
   }else if(String(getPropertyValue(item,'itemType.code')).substring(0,2)=='si'){
     itemSel=(<Input style={{display: 'block',fontSize:14,fontFamily:'宋体',margin:10}} defaultValue={defaultValue} onBlur={(data)=>onSaveAns({itemIndex:index,studentAns:data.target.value})} type="textarea" placeholder="请输入答案" autosize={{ minRows: 2, maxRows: 6 }} />)
   }
-  items.push(<div style={{borderBottom:'1px solid #DBDBDB',marginLeft:'40px',marginBottom:'20px'}}>
+  items.push(<div key={index} style={{borderBottom:'1px solid #DBDBDB',marginLeft:'40px',marginBottom:'20px'}}>
     <div style={{padding:'6px 6px 6px 25px',position:'relative'}} id={String(index)}><Icon type="question-circle" style={{color:isDoubt?'#F99727':'#e1e1e1',lineHeight:'25px',cursor:'pointer',fontSize:19,position:'absolute',left:0}} onClick={()=>onSaveAnsDoubt({itemIndex:index,isDoubt:isDoubt?0:1})} /><span style={{float:'left',lineHeight:'25px',fontFamily:'微软雅黑',fontWeight:'bold'}}>{index+1}.</span>{getPropertyValue(item,'mainText.isRichText')?<div dangerouslySetInnerHTML={{__html:getPropertyValue(item,'mainText.content')}}></div>:<p style={{lineHeight:'25px',fontFamily:'宋体',fontSize:16}}>{getPropertyValue(item,'mainText.content')}</p>}</div>
     <div style={{marginLeft:'40px'}}>
       {itemSel}
@@ -66,7 +66,7 @@ for (let [index, item] of [...(testItems||[])].entries()) {
       itemsIndex++;
       itemsIndex?lastItemCnt+=paperSects[itemsIndex-1].itemCnt:lastItemCnt=0;
       return (
-        <div style={{paddingLeft:'20px'}}>
+        <div style={{paddingLeft:'20px'}} key={itemsIndex}>
           <p style={{margin:'24px 0',fontSize:16,color:'#000',fontFamily:'微软雅黑'}}>{sect.title}</p>
           {itemsIndex?getTestNum(lastItemCnt,lastItemCnt+sect.itemCnt,items):getTestNum(0,sect.itemCnt,items)}
         </div>
